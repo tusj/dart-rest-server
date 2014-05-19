@@ -35,8 +35,9 @@ void startserver(HttpRequestHandler h, {int port: 8080}) {
             r.response
               ..statusCode = HttpStatus.NO_CONTENT
               ..close();
+          } else {
+            sink.add(r);
           }
-          sink.add(r);
         })
       );
       
