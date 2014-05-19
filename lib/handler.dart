@@ -4,7 +4,7 @@ import 'dart:io';
 
 typedef void HttpRequestHandler(HttpRequest r);
 
-abstract class HttpHandler {
+abstract class RestHandler {
   void Get(HttpRequest r);
   void Post(HttpRequest r);
   void Put(HttpRequest r);
@@ -12,7 +12,7 @@ abstract class HttpHandler {
   void Head(HttpRequest r);
 }
 
-void HttpRequestDelegator(HttpHandler h, HttpRequest r) {
+void HttpRequestDelegator(RestHandler h, HttpRequest r) {
   switch (r.method) {
     case "GET":
       h.Get(r);
@@ -34,10 +34,10 @@ void HttpRequestDelegator(HttpHandler h, HttpRequest r) {
   }
 }
 
-HttpRequestHandler MakeHttpRequestHandler(HttpHandler h) {
+HttpRequestHandler MakeHttpRequestHandler(RestHandler h) {
   return (HttpRequest r) => HttpRequestDelegator(h, r);
 }
-class MongoHandler implements HttpHandler {
+class MongoHandler implements RestHandler {
   String res;
   void Get(HttpRequest r) {
     print('GET');
