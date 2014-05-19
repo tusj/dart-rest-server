@@ -30,12 +30,8 @@ class Tree<T> {
       }
     }
   }
-  T find(List<String> path) {
-    var t = _walk(path);
-    if (t == null) {
-      return null;
-    }
-    return t.content;
+  Tree<T> find(List<String> path) {
+    return _walk(path);
   }
   
   Tree<T> newAt(List<String> path, T content, {bool makeIntermediate: false}) {

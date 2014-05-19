@@ -45,7 +45,7 @@ void main() {
     test('find without making intermediate', () {
       nodes.forEach((e) {
         var path = e.split("/");
-        expect(tree.find([root]..addAll(path)), equals("content ${path.last}"));
+        expect(tree.find([root]..addAll(path)).content, equals("content ${path.last}"));
       });
     });
     
@@ -57,7 +57,7 @@ void main() {
       });
       endnodes.forEach((e) {
         var path = e.split("/");
-        expect(tree.find([root]..addAll(path)), equals("content ${path.last}"));
+        expect(tree.find([root]..addAll(path)).content, equals("content ${path.last}"));
       });
     });
   });
