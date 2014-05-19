@@ -1,6 +1,7 @@
 library handler;
 
 import 'dart:io';
+import 'package:path/path.dart';
 
 typedef void HttpRequestHandler(HttpRequest r);
 
@@ -10,6 +11,8 @@ abstract class RestHandler {
   void Put(HttpRequest r);
   void Delete(HttpRequest r);
   void Head(HttpRequest r);
+  void Trace(HttpRequest r);
+  void Connect(HttpRequest r);
 }
 
 void HttpRequestDelegator(RestHandler h, HttpRequest r) {
@@ -29,6 +32,12 @@ void HttpRequestDelegator(RestHandler h, HttpRequest r) {
     case "HEAD":
       h.Head(r);
       break;
+    case "TRACE":
+      h.Trace(r);
+      break;
+    case "CONNECT":
+      h.Connect(r);
+      break;
     default:
       throw("Unhandled Http Method: ${r.method}");
   }
@@ -38,43 +47,79 @@ HttpRequestHandler MakeHttpRequestHandler(RestHandler h) {
   return (HttpRequest r) => HttpRequestDelegator(h, r);
 }
 class MongoHandler implements RestHandler {
-  String res;
+  var res;
   void Get(HttpRequest r) {
     print('GET');
-
     r.response
       ..write(res)
       ..close();
   }
-  void Post(HttpRequest r) {
-    print('Post');
-
+  void _getData(HttpRequest r, Function onError, Function onDone) {
     var newres = new StringBuffer();
     r.listen((List<int> data) => 
         newres.write(new String.fromCharCodes(data)),
         onError: (error) {
-          r.response
-            ..write(error)
-            ..statusCode = HttpStatus.INTERNAL_SERVER_ERROR
-            ..close();
+          onError(error);
         },
         onDone: () {
-          res = newres;
-          r.response
-            ..close();
+          onDone(newres.toString());
         });
   }
-  void Put(HttpRequest r) => Post(r);
+  void Post(HttpRequest r) {
+    if (!(res is List)) {
+      r.response
+          ..statusCode = HttpStatus.METHOD_NOT_ALLOWED
+          ..close();
+      return;
+    }
+    _getData(r, () {
+        r.response
+          ..statusCode = HttpStatus.INTERNAL_SERVER_ERROR
+          ..close();
+      },
+      (data) {
+        res.add(data);
+        r.response
+          ..statusCode = HttpStatus.CREATED
+          ..headers.add("Location", join(r.requestedUri.path, res.length - 1))
+          ..close();
+    });
+  }
+  void Put(HttpRequest r) {
+    if (res is Iterable) {
+      r.response
+        ..statusCode = HttpStatus.METHOD_NOT_ALLOWED
+        ..close();
+      return;
+    }
+    
+    _getData(r, () {
+        r.response
+          ..statusCode = HttpStatus.INTERNAL_SERVER_ERROR
+          ..close();
+      },
+      (data) {
+        if (res == null) {
+          r.response.statusCode = HttpStatus.CREATED;
+        }
+        res = data;
+        r.response.close();
+      }
+    );
+  }
   void Delete(HttpRequest r) {
-    print('Delete');
-
-    res = "";
+    res = null;
+    r.response.close();
   }
   void Head(HttpRequest r) {
-    print('Head');
-
-    r.response
-     ..write("yeah")
-     ..close();
+    r.response.close();
+  }
+  
+  void Trace(HttpRequest r) {
+    r.response.close();
+  }
+  
+  void Connect(HttpRequest r) {
+    r.response.close();
   }
 }
