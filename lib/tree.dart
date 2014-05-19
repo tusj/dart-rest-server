@@ -31,7 +31,6 @@ class Tree<T> {
     }
   }
   T find(List<String> path) {
-    
     var t = _walk(path);
     if (t == null) {
       return null;
