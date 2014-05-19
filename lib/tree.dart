@@ -1,3 +1,5 @@
+library tree;
+
 class Tree<T> {
   String identifier;
   T content;

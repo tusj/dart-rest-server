@@ -1,5 +1,8 @@
+library server;
+
 import 'dart:io';
 import 'dart:async';
+import 'package:restserver/handler.dart';
 
 final CorsAllowedMethods = 'GET, POST, PUT, DELETE';
 
@@ -11,14 +14,13 @@ void addCorsHeaders(HttpResponse r) {
         'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 }
 
-typedef void HttpRequestHandler(HttpRequest r);
 
 
 void startserver(HttpRequestHandler h, {int port: 8080}) {
   HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, port)
     .then((HttpServer server) {
       var cntRequests = 0;
-
+      print("starting server on port $port");
       // Log and add CORS headers
       // Handle OPTIONS Methods
       var requests = server.transform(
@@ -34,6 +36,7 @@ void startserver(HttpRequestHandler h, {int port: 8080}) {
               ..statusCode = HttpStatus.NO_CONTENT
               ..close();
           }
+          sink.add(r);
         })
       );
       
