@@ -17,8 +17,8 @@ addCorsHeaders(HttpResponse r) {
 
 final Logger log = new Logger('Server');
 
-serve(HttpRequestHandler h, {int port: 8080}) {
-  HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, port)
+Future<StreamSubscription> serve([HttpRequestHandler handler, int port = 8080]) {
+  return HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, port)
     .then((HttpServer server) {
       var cntRequests = 0;
       log.config("starting server on port $port");
@@ -42,7 +42,7 @@ serve(HttpRequestHandler h, {int port: 8080}) {
         })
       );
       
-      requests.listen(h.handle);
+      return requests.listen(handler.handle);
     },
     onError: (e) => log.info("server error: $e"));
 }
