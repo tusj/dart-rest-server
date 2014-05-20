@@ -6,7 +6,7 @@ import 'package:restserver/handler.dart';
 
 final CorsAllowedMethods = 'GET, POST, PUT, DELETE';
 
-void addCorsHeaders(HttpResponse r) {
+addCorsHeaders(HttpResponse r) {
   r.headers
     ..add('Access-Control-Allow-Origin', '*, ')
     ..add('Access-Control-Allow-Methods', CorsAllowedMethods)
@@ -16,7 +16,7 @@ void addCorsHeaders(HttpResponse r) {
 
 
 
-void startserver(HttpRequestHandler h, {int port: 8080}) {
+startserver(HttpRequestHandler h, {int port: 8080}) {
   HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, port)
     .then((HttpServer server) {
       var cntRequests = 0;
@@ -41,7 +41,7 @@ void startserver(HttpRequestHandler h, {int port: 8080}) {
         })
       );
       
-      requests.listen(h);
+      requests.listen(h.handle);
     },
     onError: (e) => print("server error: $e"));
 }
