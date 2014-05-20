@@ -1,4 +1,5 @@
 name: restserver
 description: A sample command-line application
 dependencies:
+  logging: any
   unittest: any

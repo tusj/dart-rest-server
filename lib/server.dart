@@ -3,6 +3,7 @@ library server;
 import 'dart:io';
 import 'dart:async';
 import 'package:restserver/handler.dart';
+import 'package:logging/logging.dart';
 
 final CorsAllowedMethods = 'GET, POST, PUT, DELETE';
 
@@ -14,21 +15,21 @@ addCorsHeaders(HttpResponse r) {
         'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 }
 
+final Logger log = new Logger('Server');
 
-
-startserver(HttpRequestHandler h, {int port: 8080}) {
+serve(HttpRequestHandler h, {int port: 8080}) {
   HttpServer.bind(InternetAddress.LOOPBACK_IP_V4, port)
     .then((HttpServer server) {
       var cntRequests = 0;
-      print("starting server on port $port");
+      log.config("starting server on port $port");
       // Log and add CORS headers
       // Handle OPTIONS Methods
       var requests = server.transform(
         new StreamTransformer.fromHandlers(handleData: (HttpRequest r, sink) {
-          print('\n${++cntRequests}');
-          print(r.uri.path);
-          print(r.method);
-          print(r.headers);
+          log.fine('\n${++cntRequests}');
+          log.fine(r.uri.path);
+          log.fine(r.method);
+          log.fine(r.headers.toString());
           addCorsHeaders(r.response);
 
           if (r.method == 'OPTIONS') {
@@ -43,5 +44,5 @@ startserver(HttpRequestHandler h, {int port: 8080}) {
       
       requests.listen(h.handle);
     },
-    onError: (e) => print("server error: $e"));
+    onError: (e) => log.info("server error: $e"));
 }
