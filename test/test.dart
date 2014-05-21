@@ -18,7 +18,7 @@ void main() {
         ..add(null, "/translations/:id")
         ..add(null, "/tests/:id");
     
-      soonToBeServer = serve(tree);
+      soonToBeServer = serve(tree.handleHttpRequest);
     });
     tearDown(() {
 //      soonToBeServer.then((server) => server.cancel());
