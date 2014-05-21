@@ -133,41 +133,38 @@ class TreeHandler {
   // If child is parameter
   //   do not accept any more children
   
-  _add(HttpRequestParameterHandler handler, Queue<String> path) {
+  TreeHandler _add(HttpRequestParameterHandler handler, Queue<String> path) {
     // Init
     var pathSep = path.first;
     bool isParam = pathSep.startsWith(parameterDelimiter);
     pathSep = isParam ? pathSep.substring(1) : pathSep;
     
-    log.finest("");
     log.finest("node is $_parameterName");
     log.finest("path is $path");
     log.finest("children are ${_children.keys.toString()}");
     
     // Stop condition
     if (path.length == 1) {
-      _addChild(handler, pathSep, isParam, isFinal: true);
-      return;
+      return _addChild(handler, pathSep, isParam, isFinal: true);
     }
     // Make intermediate
     if (!_children.containsKey(pathSep)) {
       log.finest("making intermediate");
-      _addChild(handler, pathSep, isParam, isFinal: false);
+      return _addChild(handler, pathSep, isParam, isFinal: false);
     }
     // Recurse
     log.finest("recursing");
-    _children[pathSep]._add(handler, path..removeFirst());
+    return _children[pathSep]._add(handler, path..removeFirst());
   }
   
   // Adds a handler for the path specified with / as delimiter and
   // : acts as a path parameter which will be passed to the handler as a map
-  add(HttpRequestParameterHandler handler, String path) {
+  TreeHandler add(HttpRequestParameterHandler handler, String path) {
     if(path.startsWith("/")) {
       path = path.substring(1);
     }
-    log.fine("");
     log.fine("add at $path");
-    _add(handler, new Queue<String>.from(path.split("/")));
+    return _add(handler, new Queue<String>.from(path.split("/")));
   }
   
   // Makes a simple page with relative links to the available children
