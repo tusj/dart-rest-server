@@ -36,6 +36,7 @@ class TreeHandler {
       }
     } else {
       try {
+        print("has parameter child: $_hasParameterChild");
         if (_hasParameterChild) {
           parameters[_children.keys.single] = path.removeFirst();
           _children.values.single._handle(r, path, parameters);
@@ -79,6 +80,7 @@ class TreeHandler {
     log.finer("addchild with name $pathSep, is param: $isParam");
 
     var addNewTree = () {
+      this._hasParameterChild = isParam;
       return _children[pathSep] = new TreeHandler(isFinal ? handler : null)
       .._isParameter = isParam
       .._isRoot = false
@@ -135,8 +137,8 @@ class TreeHandler {
     bool isParam = pathSep.startsWith(parameterDelimiter);
     pathSep = isParam ? pathSep.substring(1) : pathSep;
     
-    log.finest("");
     log.finest("node is $_parameterName");
+    log.finest("new node is param: $isParam");
     log.finest("path is $path");
     log.finest("children are ${_children.keys.toString()}");
     
@@ -161,7 +163,7 @@ class TreeHandler {
       path = path.substring(1);
     }
     log.fine("");
-    log.fine("add at $path");
+    log.fine("add at $path from $_parameterName");
     return _add(handler, new Queue<String>.from(path.split("/")));
   }
   
