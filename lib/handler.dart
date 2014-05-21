@@ -30,7 +30,7 @@ class TreeHandler {
   _handle(HttpRequest r, Queue<String> path, Map<String, String> parameters) {
     if (path.length == 0) {
       if (_handler != null) {
-        log.fine("found handler for $path");
+        log.fine("found handler for $_parameterName");
         _handler.handle(r, parameters);
         return;
       }
