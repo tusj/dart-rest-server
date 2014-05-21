@@ -79,21 +79,18 @@ class TreeHandler {
     log.finer("addchild with name $pathSep, is param: $isParam");
 
     var addNewTree = () {
-      var tree = new TreeHandler(isFinal ? handler : null)
-        .._isParameter = isParam
-        .._isRoot = false
-        .._parameterName = pathSep
-        .._parent = this;
-      _children[pathSep] = tree;
-      return tree;
+      return _children[pathSep] = new TreeHandler(isFinal ? handler : null)
+      .._isParameter = isParam
+      .._isRoot = false
+      .._parameterName = pathSep
+      .._parent = this;
     };
     
     var setHandler = (String errMsg) {
       var childKey = _children.keys.single;
       var child = _children.values.single;
       if (childKey == pathSep) {
-        child._handler = child._handler == null && isFinal ? handler : null;
-        return child._handler;
+        return child.._handler = child._handler == null && isFinal ? handler : null;
       }
       throw(errMsg);
     };
@@ -114,13 +111,12 @@ class TreeHandler {
     if (!_children.containsKey(pathSep)) {
       return addNewTree();
     }
-    var child = _children[pathSep];
     
+    var child = _children[pathSep];
     if (child._handler != null) {
       throw("Set handler while previously set");
     }
-    child._handler = child._handler == null && isFinal ? handler : null;
-    return child._handler;
+    return child.._handler = child._handler == null && isFinal ? handler : null;
   }
   
   // Adds a handler at path end
@@ -139,6 +135,7 @@ class TreeHandler {
     bool isParam = pathSep.startsWith(parameterDelimiter);
     pathSep = isParam ? pathSep.substring(1) : pathSep;
     
+    log.finest("");
     log.finest("node is $_parameterName");
     log.finest("path is $path");
     log.finest("children are ${_children.keys.toString()}");
@@ -150,7 +147,7 @@ class TreeHandler {
     // Make intermediate
     if (!_children.containsKey(pathSep)) {
       log.finest("making intermediate");
-      return _addChild(handler, pathSep, isParam, isFinal: false);
+      _addChild(handler, pathSep, isParam, isFinal: false);
     }
     // Recurse
     log.finest("recursing");
@@ -163,16 +160,19 @@ class TreeHandler {
     if(path.startsWith("/")) {
       path = path.substring(1);
     }
+    log.fine("");
     log.fine("add at $path");
     return _add(handler, new Queue<String>.from(path.split("/")));
   }
   
   // Makes a simple page with relative links to the available children
   _showAvailable(HttpRequest r) {
+    var p = (e) => _children[e]._isParameter ? ":" : "";
     r.response
       ..statusCode = HttpStatus.NOT_FOUND
       ..write("<html><body><h1>Available resources at \"${_trace()}\"</h1></body>")
-      ..writeAll(_children.keys.map((e) => "<a href=\"${this._parameterName}/$e\">$e</a><br>"))
+      ..writeAll(_children.keys.map((e) => 
+          "<a href=\"$_parameterName/${p(e)}$e\">${p(e)}$e</a><br>"))
       ..write("</body></html>")
       ..close();
   }
