@@ -1,8 +1,7 @@
-import 'package:unittest/unittest.dart';
 import 'package:restserver/handler.dart';
 import 'package:restserver/server.dart';
+import 'package:unittest/unittest.dart';
 import 'dart:async';
-//import 'dart:html';
 
 void main() {
 //  var settingsResource = new MongoDbResource("user");

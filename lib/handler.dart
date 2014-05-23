@@ -1,8 +1,8 @@
 library handler;
 
 import 'dart:io';
-import 'dart:collection';
 import 'package:logging/logging.dart';
+import 'dart:collection';
 
 // A HTTP request handler which accepts a map containing the 
 // value of the path segments who starts with a colon

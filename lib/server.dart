@@ -1,8 +1,8 @@
 library server;
 
+import 'package:restserver/handler.dart';
 import 'dart:io';
 import 'dart:async';
-import 'package:restserver/handler.dart';
 import 'package:logging/logging.dart';
 
 final CorsAllowedMethods = 'GET, POST, PUT, DELETE';
@@ -26,10 +26,7 @@ Future<StreamSubscription> serve([handleHttpRequest handler, int port = 8080]) {
       // Handle OPTIONS Methods
       var requests = server.transform(
         new StreamTransformer.fromHandlers(handleData: (HttpRequest r, sink) {
-          log.fine('\n${++cntRequests}');
-          log.fine(r.uri.path);
-          log.fine(r.method);
-          log.fine(r.headers.toString());
+          log.fine('#${++cntRequests}: ${r.uri.path}: ${r.method}');
           addCorsHeaders(r.response);
 
           if (r.method == 'OPTIONS') {
