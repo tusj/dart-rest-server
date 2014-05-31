@@ -12,10 +12,17 @@ void main() {
   // set up the tree
   // at each path segment
   var tree = new TreeHandler()
+    // root handler
     ..add(new WelcomeHandler(), "")
-    ..add(new userHandler(), "user").add(specificUserHandler, ":id") // each add returns a new tree to allow nesting
-    ..add(null, "mail").add(specicMailHandler, ":id")                // can also provide null to indicate no handler
-    ..add(new whatNotHandler(), "what/not/handler")                  // can also add intermediate paths
+    
+    // each add returns a new tree to allow nesting
+    ..add(new userHandler(), "user").add(specificUserHandler, ":id")
+    
+    // can also provide null to indicate no handler
+    ..add(null, "mail").add(specicMailHandler, ":id")
+    
+    // can also add intermediate paths
+    ..add(new whatNotHandler(), "what/not/handler")
   
   // start the server, which is a convenience method
   // allowing all CORS-headers
