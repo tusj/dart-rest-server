@@ -36,7 +36,6 @@ class TreeHandler {
       }
     } else {
       try {
-        print("has parameter child: $_hasParameterChild");
         if (_hasParameterChild) {
           parameters[_children.keys.single] = path.removeFirst();
           _children.values.single._handle(r, path, parameters);
