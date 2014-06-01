@@ -1,5 +1,5 @@
 name: rest_server
-description: A sample command-line application
+description: A simple REST framework containing a wrapper http server adding CORS headers and a tree-implementation taking an HTTP handler for every path.
 dependencies:
   logging: any
   unittest: any
