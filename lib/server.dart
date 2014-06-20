@@ -1,6 +1,6 @@
 library server;
 
-import 'package:restserver/handler.dart';
+import 'package:rest_server/handler.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:logging/logging.dart';
@@ -38,7 +38,7 @@ Future<StreamSubscription> serve([handleHttpRequest handler, int port = 8080]) {
           }
         })
       );
-      
+
       return requests.listen(handler);
     },
     onError: (e) => log.info("server error: $e"));

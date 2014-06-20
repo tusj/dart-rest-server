@@ -1,5 +1,5 @@
-import 'package:restserver/handler.dart';
-import 'package:restserver/server.dart';
+import 'package:rest_server/handler.dart';
+import 'package:rest_server/server.dart';
 import 'package:unittest/unittest.dart';
 import 'dart:async';
 
@@ -16,7 +16,7 @@ void main() {
         ..add(null, "/users/:id/:setting")
         ..add(null, "/translations/:id")
         ..add(null, "/tests/:id");
-    
+
       soonToBeServer = serve(tree.handleHttpRequest);
     });
     tearDown(() {
@@ -28,6 +28,6 @@ void main() {
 //      var req = HttpRequest.getString("http://localhost:8080");
 //      req.then((onData) => print(onData));
     });
-    
+
   });
 }
